@@ -1,1 +1,0 @@
-python3 real_test.py $1 $2
