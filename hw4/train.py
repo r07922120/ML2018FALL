@@ -20,7 +20,7 @@ from keras.models import Model
 from gensim.models import Word2Vec
 import logging
 
-jieba.load_userdict(argv[1])
+jieba.load_userdict(argv[3])
 
 
 
