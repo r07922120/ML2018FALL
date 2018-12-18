@@ -54,7 +54,7 @@ x_test = pad_sequences(x_test, maxlen=2001)
 
 #labels = [int(round(x[0])) for x in model.predict(x_test) ]
 
-model = load_model("model0.hdf5\r")
+model = load_model("temp/model1.hdf5")
 result = model.predict(x_test, batch_size = 400, verbose = 1)
 with open(argv[3], 'w') as f:
 	f.write('id,label\n')

@@ -19,8 +19,11 @@ from keras.layers import Conv1D, MaxPooling1D, Embedding
 from keras.models import Model
 from gensim.models import Word2Vec
 import logging
-from tensorflow.contrib.keras.api.keras.initializers import Constant
+
 jieba.load_userdict(argv[4])
+
+
+
 text = []  # list of text samples
 label = []  # list of label ids
 """
@@ -77,6 +80,10 @@ with open(argv[2], 'r') as f:
 		count += 1
 		print('\rY_train: ' + repr(count), end='', flush=True)
 	print('', flush=True)
+
+
+
+
 # train model
 model_vec = Word2Vec(text, min_count=1)
 # summarize the loaded model
@@ -88,11 +95,15 @@ model_vec = Word2Vec(text, min_count=1)
 #print(model['東施'])
 # save model
 model_vec.save('model.bin')
+
 pretrained_weights = model_vec.wv.syn0
 vocab_size, emdedding_size = pretrained_weights.shape
+
 vocab_dim = 100
 batch_size = 400
 n_epoch = 10
+
+
 text=text[0:train_len]
 new_sentences = []
 count = 0
@@ -126,6 +137,8 @@ y_train=np.array(label[3000:len(new_sentences)])
 y_test=np.array(label[0:3000])
 x_train =pad_sequences(x_train, maxlen=max_sentence_len)
 x_test = pad_sequences(x_test, maxlen=max_sentence_len)
+
+
 """
 train_x = np.zeros([len(new_sentences), max_sentence_len], dtype=np.int32)
 for i, sentence in enumerate(new_sentences):
@@ -134,16 +147,20 @@ for i, sentence in enumerate(new_sentences):
 		print(word)
 		#train_x[i, t] = word2idx(word)
 """
+
+
 model = Sequential()
-model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, embeddings_initializer=Constant(pretrained_weights),input_length=max_sentence_len))
+model.add(Embedding(input_dim=vocab_size, output_dim=emdedding_size, weights=[pretrained_weights],input_length=max_sentence_len))
 #model.add(LSTM(units=emdedding_size))
 model.add(LSTM(64, dropout=0.2, recurrent_dropout=0.2))
 model.add(Dense(1))
 model.add(Activation("sigmoid"))
 model.summary()
 model.compile(loss="binary_crossentropy", optimizer="adam",metrics=["accuracy"])
+
 filepath="temp/model1.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+
 """
 model.add(BatchNormalization(axis=-1))
 model.add(Dense(units=vocab_size))
